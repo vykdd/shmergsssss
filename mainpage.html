@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>shmerg</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x2732;</text></svg>">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: black;
+            color: white;
+            font-family: 'Roboto', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: all 0.5s;
+        }
+        
+        body.evil-mode {
+            background-color: #200000;
+            color: #ff0000;
+            filter: contrast(150%) brightness(70%) saturate(200%);
+        }
+        
+        body.evil-mode::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.3),
+                rgba(0, 0, 0, 0.3) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 10000;
+        }
+        
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            z-index: 1000;
+            transition: all 0.5s;
+            backdrop-filter: blur(5px);
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+        
+        .evil-mode header {
+            background-color: rgba(50, 0, 0, 0.8);
+            border-bottom: 1px solid #ff0000;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.5s;
+        }
+        
+        .evil-mode .logo {
+            color: #ff0000;
+            text-shadow: 0 0 5px #ff0000;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-item {
+            color: white;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .nav-item:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: white;
+            bottom: -5px;
+            left: 0;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-item:hover:after {
+            width: 100%;
+        }
+        
+        .nav-item:hover {
+            opacity: 1;
+        }
+        
+        .evil-mode .nav-item {
+            color: #ff3333;
+            opacity: 0.9;
+        }
+        
+        .evil-mode .nav-item:after {
+            background: #ff0000;
+        }
+        
+        .evil-mode .nav-item:hover {
+            color: #ff0000;
+            text-shadow: 0 0 5px #ff0000;
+        }
+        
+        .mobile-nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s;
+        }
+        
+        .mobile-nav-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        .evil-mode .mobile-nav-toggle {
+            color: #ff0000;
+        }
+        
+        .content-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            transition: all 0.5s;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s forwards;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .main-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .evil-mode .main-content {
+            color: #ff3333;
+        }
+        
+        .headline {
+            font-size: 80px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            transition: all 0.5s;
+            animation: textGlow 2s infinite alternate;
+        }
+        
+        @keyframes textGlow {
+            from {text-shadow: 0 0 2px rgba(255, 255, 255, 0.1);}
+            to {text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);}
+        }
+        
+        .evil-mode .headline {
+            color: #ff0000;
+            animation: evilTextGlow 2s infinite alternate;
+        }
+        
+        @keyframes evilTextGlow {
+            from {text-shadow: 0 0 5px rgba(255, 0, 0, 0.3);}
+            to {text-shadow: 0 0 15px rgba(255, 0, 0, 0.7);}
+        }
+        
+        .subheadline {
+            font-size: 16px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.8;
+            max-width: 800px;
+            margin: 0 auto;
+            transition: all 0.5s;
+        }
+        
+        .evil-mode .subheadline {
+            color: #ff6666;
+            opacity: 0.9;
+        }
+        
+        .hall-content {
+            display: none;
+        }
+        
+        .hall-image {
+            width: 300px;
+            height: 300px;
+            margin-bottom: 30px;
+            transition: all 0.5s;
+            border-radius: 10px;
+            filter: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% {transform: translateY(0px);}
+            50% {transform: translateY(-15px);}
+            100% {transform: translateY(0px);}
+        }
+        
+        .evil-mode .hall-image {
+            transform: scale(1.1) rotate(3deg);
+            filter: contrast(150%) brightness(80%) sepia(50%) hue-rotate(-10deg) saturate(300%);
+            border: 2px solid #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+            animation: evilFloat 4s ease-in-out infinite;
+        }
+        
+        @keyframes evilFloat {
+            0% {transform: scale(1.1) rotate(3deg);}
+            33% {transform: scale(1.15) rotate(5deg);}
+            66% {transform: scale(1.1) rotate(1deg);}
+            100% {transform: scale(1.1) rotate(3deg);}
+        }
+        
+        .evil-button {
+            background-color: #ff3300;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .evil-button:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.6s;
+        }
+        
+        .evil-button:hover:before {
+            left: 100%;
+        }
+        
+        .evil-button:hover {
+            background-color: #cc0000;
+            transform: scale(1.05);
+        }
+        
+        .evil-mode .evil-button {
+            background-color: #990000;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+            color: #ff9999;
+        }
+        
+        .community-content {
+            display: none;
+            padding: 100px 20px 60px;
+        }
+        
+        .community-members {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 60px;
+            width: 100%;
+            max-width: 1200px;
+        }
+        
+        .member-box {
+            width: 280px;
+            height: 380px;
+            background-color: rgba(30, 30, 30, 0.8);
+            border-radius: 15px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(0);
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), 
+                        box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        
+        .member-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .member-box.active {
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+            transform: translateY(-3px);
+            transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), 
+                        box-shadow 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        
+        .evil-mode .member-box {
+            background-color: rgba(50, 0, 0, 0.8);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            box-shadow: 0 10px 20px rgba(100, 0, 0, 0.3);
+        }
+        
+        .evil-mode .member-box:hover {
+            box-shadow: 0 15px 30px rgba(255, 0, 0, 0.3);
+        }
+        
+        .evil-mode .member-box.active {
+            box-shadow: 0 12px 24px rgba(255, 0, 0, 0.35);
+        }
+        
+        .member-image {
+            width: 100%;
+            height: 220px;
+            background-color: #333;
+            object-fit: cover;
+            transition: all 0.5s;
+        }
+        
+        .member-name {
+            font-size: 32px;
+            font-weight: 800;
+            margin-top: 30px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.5s;
+        }
+        
+        .member-description {
+            font-size: 14px;
+            opacity: 0.7;
+            padding: 0 20px;
+            margin-top: 15px;
+            max-width: 260px;
+            transition: all 0.5s;
+        }
+        
+        .evil-mode .member-image {
+            filter: contrast(120%) brightness(60%) sepia(30%) hue-rotate(-10deg);
+        }
+        
+        .evil-mode .member-name {
+            color: #ff0000;
+            text-shadow: 0 0 8px rgba(255, 0, 0, 0.4);
+        }
+        
+        .evil-mode .member-description {
+            color: #ff6666;
+        }
+        
+        footer {
+            width: 100%;
+            padding: 30px 40px;
+            background-color: rgba(10, 10, 10, 0.8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            transition: all 0.5s;
+        }
+        
+        .evil-mode footer {
+            background-color: rgba(40, 0, 0, 0.8);
+            border-top: 1px solid rgba(255, 0, 0, 0.3);
+        }
+        
+        .footer-logo {
+            font-size: 18px;
+            opacity: 0.5;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            opacity: 0.6;
+            transition: all 0.3s;
+        }
+        
+        .footer-link:hover {
+            opacity: 1;
+        }
+        
+        .evil-mode .footer-link {
+            color: #ff6666;
+        }
+        
+        .evil-mode .footer-link:hover {
+            color: #ff3333;
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+        }
+        
+        .copyright {
+            font-size: 12px;
+            opacity: 0.5;
+        }
+        
+        .evil-mode .copyright {
+            color: #ff6666;
+        }
+        
+        @media (max-width: 900px) {
+            .community-members {
+                gap: 30px;
+            }
+            
+            .member-box {
+                width: 240px;
+                height: 340px;
+            }
+            
+            .member-image {
+                height: 180px;
+            }
+            
+            .member-name {
+                font-size: 28px;
+                margin-top: 25px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .headline {
+                font-size: 50px;
+            }
+            
+            .mobile-nav-toggle {
+                display: block;
+            }
+            
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background-color: rgba(0, 0, 0, 0.9);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: all 0.5s ease;
+                z-index: 999;
+            }
+            
+            .evil-mode .nav-menu {
+                background-color: rgba(40, 0, 0, 0.9);
+            }
+            
+            .nav-menu.active {
+                right: 0;
+            }
+            
+            .nav-item {
+                margin: 20px 0;
+                font-size: 18px;
+            }
+            
+            .hall-image {
+                width: 250px;
+                height: 250px;
+            }
+            
+            footer {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header {
+                padding: 15px 20px;
+            }
+            
+            .headline {
+                font-size: 40px;
+            }
+            
+            .subheadline {
+                font-size: 14px;
+            }
+            
+            .hall-image {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .member-box {
+                width: 220px;
+                height: 320px;
+            }
+            
+            .member-image {
+                height: 160px;
+            }
+            
+            .member-name {
+                font-size: 24px;
+                margin-top: 20px;
+            }
+            
+            .member-description {
+                font-size: 12px;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo" id="logo">
+            &#x2732;
+        </div>
+        <button class="mobile-nav-toggle" id="mobile-nav-toggle">☰</button>
+        <div class="nav-menu" id="nav-menu">
+            <a href="chippy.html" class="nav-item" id="chippy-link">Chippy</a>
+            <a href="#" class="nav-item" id="community-link">Community</a>
+            <a href="#" class="nav-item" id="hall-link">Hall</a>
+        </div>
+    </header>
+    
+    <div class="content-container main-content" id="home-content">
+        <h1 class="headline">
+            Shmergs<br>
+            Will<br>
+            Rise
+        </h1>
+        <p class="subheadline">
+            just a shmerg...
+        </p>
+    </div>
+    
+    <div class="content-container hall-content" id="hall-content">
+        <img src="koslist.png" alt="Normal Hall Image" class="hall-image" id="hall-image">
+        <h2 class="headline">The Hall</h2>
+        <p class="subheadline">Welcome to the sacred hall of shmergs</p>
+        <button class="evil-button" id="evil-button">Evil Mode</button>
+    </div>
+    
+    <div class="content-container community-content" id="community-content">
+        <h2 class="headline">Community</h2>
+        <p class="subheadline">Meet our shmerg community members</p>
+        <div class="community-members">
+            <div class="member-box" id="chippy-box">
+                <img src="yakub.png" alt="Chippy" class="member-image">
+                <div class="member-name">Chippy</div>
+                <div class="member-description">ThugBorea Super Solider/Benito Floydilini</div>
+            </div>
+            <div class="member-box" id="jack-box">
+                <img src="togif.png" alt="Jack" class="member-image">
+                <div class="member-name">Jack</div>
+                <div class="member-description">Low Tier Nigger Chud</div>
+            </div>
+            <div class="member-box" id="nardbone-box">
+                <img src="yakkkk.png" alt="Nardbone" class="member-image">
+                <div class="member-name">Nardbone</div>
+                <div class="member-description">ThugBorea Overseer</div>
+            </div>
+            <div class="member-box" id="kolby-box">
+                <img src="bruu.jpg" alt="Kolby" class="member-image">
+                <div class="member-name">Kolby</div>
+                <div class="member-description">Lord Shmerg</div>
+            </div>
+            <div class="member-box" id="misanthropy-box">
+                <img src="middle.jpg" alt="Misanthropy" class="member-image">
+                <div class="member-name">Misanthropy</div>
+                <div class="member-description">Misanthropy_556</div>
+            </div>
+    
+            <div class="member-box" id="solaire-box">
+                <img src="image.png" alt="Solaire2508" class="member-image">
+                <div class="member-name">Solaire2508</div>
+                <div class="member-description">the polak</div>
+            </div>
+            <div class="member-box" id="pooronic-box">
+                <img src="The_Resegregation.jpg" alt="pooronic" class="member-image">
+                <div class="member-name">Pooronic</div>
+                <div class="member-description">ThugBorea Chud</div>
+        </div>
+        <div class="member-box" id="pooronic-box">
+            <img src="uglyasscat.gif" alt="del" class="member-image">
+            <div class="member-name">Deletion</div>
+            <div class="member-description">ThugBorea RapeSlave</div>
+    </div>
+    
+    <footer>
+        <div class="footer-logo">&#x2732; SHMERG</div>
+        <div class="footer-links">
+            <a href="#" class="footer-link">shmerg</a>
+            <a href="#" class="footer-link">power</a>
+            <a href="#" class="footer-link">shmerg</a>
+            <a href="#" class="footer-link">power</a>
+        </div>
+        <div class="copyright">© 2025 Shmerg</div>
+    </footer>
+    
+    <audio id="evil-audio" preload="auto">
+        <source src="Manipulating His Stock.mp3" type="audio/mp3">
+    </audio>
+    
+    <script>
+       document.addEventListener('DOMContentLoaded', function() {
+        const homeContent = document.getElementById('home-content');
+        const hallContent = document.getElementById('hall-content');
+        const communityContent = document.getElementById('community-content');
+        const hallLink = document.getElementById('hall-link');
+        const communityLink = document.getElementById('community-link');
+        const logo = document.getElementById('logo');
+        const evilButton = document.getElementById('evil-button');
+        const hallImage = document.getElementById('hall-image');
+        const evilAudio = document.getElementById('evil-audio');
+        const body = document.body;
+        const navMenu = document.getElementById('nav-menu');
+        const mobileNavToggle = document.getElementById('mobile-nav-toggle');
+        const normalImageSrc = "koslist.png";
+        const evilImageSrc = "deepfried_1743548887514.jpg";
+        
+        const memberLinks = {
+            'chippy-box': 'https://shmerg.lol',
+            'jack-box': 'https://shmerg.lol',
+            'nardbone-box': 'https://shmerg.lol',
+            'kolby-box': 'https://shmerg.lol',
+            'misanthropy-box': 'https://shmerg.lol',
+            'solaire-box': 'https://vk.link/thebase202'
+        };
+        
+        const memberBoxes = document.querySelectorAll('.member-box');
+        
+        homeContent.style.display = 'flex';
+        hallContent.style.display = 'none';
+        communityContent.style.display = 'none';
+        
+        mobileNavToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+            this.textContent = navMenu.classList.contains('active') ? '✕' : '☰';
+        });
+        logo.addEventListener('click', function() {
+            window.location.href = 'index.html';
+        });
+
+        hallLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            switchContent('hall');
+        });
+        
+        communityLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            switchContent('community');
+        });
+        
+        function switchContent(contentType) {
+            navMenu.classList.remove('active');
+            mobileNavToggle.textContent = '☰';
+            homeContent.style.opacity = '0';
+            hallContent.style.opacity = '0';
+            communityContent.style.opacity = '0';
+            
+            setTimeout(function() {
+                homeContent.style.display = 'none';
+                hallContent.style.display = 'none';
+                communityContent.style.display = 'none';
+
+                if (contentType === 'home') {
+                    homeContent.style.display = 'flex';
+                } else if (contentType === 'hall') {
+                    hallContent.style.display = 'flex';
+                } else if (contentType === 'community') {
+                    communityContent.style.display = 'flex';
+                }
+                
+                window.scrollTo(0, 0);
+                void document.body.offsetWidth;
+                if (contentType === 'home') {
+                    homeContent.style.opacity = '1';
+                } else if (contentType === 'hall') {
+                    hallContent.style.opacity = '1';
+                } else if (contentType === 'community') {
+                    communityContent.style.opacity = '1';
+                }
+            }, 500);
+        }
+        
+        memberBoxes.forEach(box => {
+            box.addEventListener('click', function() {
+                if (!this.classList.contains('processing')) {
+                    this.classList.add('processing');
+                    this.classList.add('active');
+
+                    const url = memberLinks[this.id];
+                    
+                    setTimeout(() => {
+                        this.classList.remove('active');
+                        
+                        setTimeout(() => {
+                            this.classList.remove('processing');
+
+                            if (url) {
+                                window.location.href = url;
+                            }
+                        }, 200);
+                    }, 200);
+                }
+            });
+        });
+        
+        let evilMode = false;
+        evilButton.addEventListener('click', function() {
+            evilMode = !evilMode;
+            
+            if (evilMode) {
+                body.classList.add('evil-mode');
+                evilButton.textContent = 'Normal Mode';
+                hallImage.src = evilImageSrc;
+                hallImage.alt = "Evil Hall Image";
+                evilAudio.play();
+            } else {
+                body.classList.remove('evil-mode');
+                evilButton.textContent = 'Evil Mode';
+                hallImage.src = normalImageSrc;
+                hallImage.alt = "Normal Hall Image";
+                evilAudio.pause();
+                evilAudio.currentTime = 0;
+            }
+        });
+
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+        
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.body.classList.add('loaded');
+            }, 300);
+        });
+    });
+    </script>
+</body>
+</html>

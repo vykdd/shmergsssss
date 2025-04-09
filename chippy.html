@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chippy</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: radial-gradient(circle, hsl(0, 0%, 100%), #ffff00);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+            color: white;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.9), rgba(255,255,220,0.5));
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .chippy-container {
+            position: relative;
+            z-index: 2;
+            filter: brightness(2.5) contrast(1.8);
+            width: 50%;
+            max-width: 500px;
+        }
+        
+        .chippy-image {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 0 50px white) brightness(1.8);
+            animation: pulse 1.5s infinite alternate;
+        }
+        
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: white;
+            color: #d6b792;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 1);
+            text-decoration: none;
+            z-index: 10;
+            font-size: 18px;
+            filter: brightness(1.8);
+        }
+        
+        @keyframes pulse {
+            from {
+                filter: drop-shadow(0 0 5px white) brightness(2);
+                transform: scale(1);
+            }
+            to {
+                filter: drop-shadow(0 0 10px white) brightness(2.5);
+                transform: scale(1.05);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .chippy-container {
+                width: 80%;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index" class="back-button">Back</a>
+    
+    <div class="chippy-container">
+        <img src="IMG_0213.jpg" alt="Chippy" class="chippy-image">
+    </div>
+
+    <audio autoplay loop>
+        <source src="videoplayback.mp4" type="audio/mpeg">
+    </audio>
+</body>
+</html>

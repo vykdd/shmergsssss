@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clowns</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: black;
+            margin: 0;
+            padding: 20px;
+            color: white;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: black;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: white;
+            text-shadow: 0 0 5px rgba(255,255,255,0.3);
+        }
+        .clowns {
+            display: flex;
+            justify-content: space-around;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        .clown {
+            text-align: center;
+            width: 45%;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background-color: black;
+            border: 1px solid rgba(255,255,255,0.1);
+            min-width: 300px;
+            margin-bottom: 20px;
+        }
+        .clown:hover {
+            background-color: rgba(255,255,255,0.05);
+            transform: scale(1.03);
+            box-shadow: 0 0 15px rgba(255,255,255,0.1);
+        }
+        .clown img {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        .clown h2 {
+            margin: 10px 0;
+            color: white;
+        }
+        .clown p {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .profile {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: black;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+            opacity: 0;
+            animation: fadeIn 1.5s ease-in-out forwards;
+            flex-wrap: wrap;
+        }
+        .profile img {
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 30px;
+            border: 2px solid rgba(255,255,255,0.2);
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        .info {
+            flex: 1;
+            min-width: 300px;
+        }
+        .info h2 {
+            color: white;
+            margin-top: 0;
+            text-align: left;
+        }
+        .info p {
+            line-height: 1.6;
+            color: rgba(255,255,255,0.8);
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-gap: 20px;
+            margin-top: 30px;
+        }
+        .gallery img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 5px;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+            opacity: 0;
+            animation: fadeIn 1.5s ease-in-out forwards;
+            cursor: pointer;
+        }
+        .gallery img:hover {
+            transform: scale(1.05);
+            border-color: white;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 30px;
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+            border-radius: 0;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 1.5s ease-in-out 0.7s forwards;
+            cursor: pointer;
+        }
+        .back-link:hover {
+            background-color: rgba(255,255,255,0.2);
+            transform: scale(1.05);
+        }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        .clown {
+            opacity: 0;
+            animation: fadeIn 1.5s ease-in-out forwards;
+        }
+        .clown:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+        .gallery img:nth-child(1) { animation-delay: 0.1s; }
+        .gallery img:nth-child(2) { animation-delay: 0.2s; }
+        .gallery img:nth-child(3) { animation-delay: 0.3s; }
+        .gallery img:nth-child(4) { animation-delay: 0.4s; }
+        .gallery img:nth-child(5) { animation-delay: 0.5s; }
+        .gallery img:nth-child(6) { animation-delay: 0.6s; }
+        
+        .view {
+            display: none;
+        }
+        .view.active {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .profile {
+                flex-direction: column;
+                text-align: center;
+            }
+            .profile img {
+                margin-right: 0;
+            }
+            .info h2 {
+                text-align: center;
+            }
+            .clown {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            .clowns {
+                flex-direction: column;
+            }
+        }
+        
+        .fullscreen-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .fullscreen-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .fullscreen-image {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+        
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            color: white;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .close-button:hover {
+            transform: scale(1.2);
+            color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="main-view" class="view active">
+            <h1>Clowns</h1>
+            <div class="clowns">
+                <div class="clown" onclick="showView('blackjack-view')">
+                    <img src="blackjackpfp.png" alt="Blackjack">
+                    <h2>Blackjack</h2>
+                    <p>BlackJack</p>
+                </div>
+                
+                <div class="clown" onclick="showView('slaughter-view')">
+                    <img src="cornyasf.png" alt="Slaughter">
+                    <h2>Slaughter</h2>
+                    <p>Slaughter</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="blackjack-view" class="view">
+            <h1>Blackjack</h1>
+            
+            <div class="profile">
+                <img src="blackjackpfp.png" alt="Blackjack" onclick="openFullscreen(this.src)">
+                <div class="info">
+                    <h2>Blackjack</h2>
+                    <p>add wtv txt here</p>
+                </div>
+            </div>
+            
+            <h2>Gallery</h2>
+            <div class="gallery">
+                <img src="Sec2.png" alt="Blackjack" onclick="openFullscreen(this.src)">
+                <img src="Niggafightingpeopleonytcomments.png" alt="Blackjack" onclick="openFullscreen(this.src)">
+                <img src="CausePT1.png" alt="Blackjack" onclick="openFullscreen(this.src)">
+                <img src="blackjackpfp.png" alt="Blackjack" onclick="openFullscreen(this.src)">
+                <img src="Blackjackdickriding.png" alt="Blackjack" onclick="openFullscreen(this.src)">
+                <img src="BlackjacksprofileSOB.png" alt="Blackjack" onclick="openFullscreen(this.src)">
+                <img src="Canyoutalktozesoarealquick.png" alt="Blackjack" onclick="openFullscreen(this.src)">
+                <img src="Blackjacksresponsetodickriding.png" alt="Blackjack" onclick="openFullscreen(this.src)">
+                <img src="Schizobabblefromfagjack.png" alt="Blackjack" onclick="openFullscreen(this.src)">
+                <img src="Blackjackwiththegang.png" alt="Blackjack" onclick="openFullscreen(this.src)">
+                <img src="IDONTGOTFAKETRUES.png" alt="Blackjack" onclick="openFullscreen(this.src)">
+                <img src="blackjacksendingmoreshittoslaughter.png" alt="Blackjack" onclick="openFullscreen(this.src)">
+                <img src="blackjacksendingslaughterhispfpfs.png" alt="Blackjack" onclick="openFullscreen(this.src)">
+                <img src="ironicright.png" alt="Blackjack" onclick="openFullscreen(this.src)">
+                <img src="whatthehellkiller.png" alt="Blackjack" onclick="openFullscreen(this.src)">
+            </div>
+            
+            <center><span class="back-link" onclick="showView('main-view')">BACK</span></center>
+        </div>
+        
+        <div id="slaughter-view" class="view">
+            <h1>Slaughter</h1>
+            
+            <div class="profile">
+                <img src="slau.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+                <div class="info">
+                    <h2>Slaughter</h2>
+                    <p>nerd</p>
+                </div>
+            </div>
+            
+            <h2>Gallery</h2>
+            <div class="gallery">
+                <img src="Hostelwhoreconvowithslaughter.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+                <img src="Insecure.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+                <img src="MKultravictim.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+                <img src="Yyoukeepingtheslaughternamesuprisedface.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+                <img src="EffectPT2.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+                <img src="Fanboy.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+                <img src="Howironicslaughter.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+                <img src="YoulldoWHATnow.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+                <img src="lilhomie.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+                <img src="Slaughteraskingaboutwhereabouts.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+                <img src="I'mgaySLAUGHTER.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+                <img src="SlaughtercryingafterIcallhimoutforpowertripping.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+                <img src="Slaughtersprofileonvrc.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+                <img src="Mocking.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+                <img src="moremanikkkk.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+                <img src="Moremanikbullshit.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+                <img src="manikbullshit.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+                <img src="I'msorrymanik.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+                <img src="SlaughtercryingtodripsPT2.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+                <img src="Slaughtercryingtodrips.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+                <img src="Slaughtersrequests.png" alt="Slaughter" onclick="openFullscreen(this.src)">
+            </div>
+            
+            <center><span class="back-link" onclick="showView('main-view')">BACK</span></center>
+        </div>
+    </div>
+    
+    <div id="fullscreen-overlay" class="fullscreen-overlay">
+        <img id="fullscreen-image" class="fullscreen-image" src="" alt="Fullscreen Image">
+        <button class="close-button" onclick="closeFullscreen()">×</button>
+    </div>
+
+    <script>
+        function showView(viewId) {
+            const views = document.querySelectorAll('.view');
+            views.forEach(view => {
+                view.classList.remove('active');
+            });
+            
+            const selectedView = document.getElementById(viewId);
+            selectedView.classList.add('active');
+            
+            const animatedElements = selectedView.querySelectorAll('.profile, .gallery img, .back-link');
+            animatedElements.forEach(el => {
+                el.style.animation = 'none';
+                el.offsetHeight;
+                el.style.animation = null;
+            });
+            
+            window.scrollTo(0, 0);
+        }
+        
+        function openFullscreen(imgSrc) {
+            const overlay = document.getElementById('fullscreen-overlay');
+            const fullscreenImg = document.getElementById('fullscreen-image');
+            
+            fullscreenImg.src = imgSrc;
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeFullscreen() {
+            const overlay = document.getElementById('fullscreen-overlay');
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        document.getElementById('fullscreen-overlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeFullscreen();
+            }
+        });
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeFullscreen();
+            }
+        });
+    </script>
+</body>
+</html>

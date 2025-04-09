@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>shmerg.lol</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .logo-container {
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeIn 1.5s ease-in-out forwards;
+        }
+
+        .logo-container img {
+            max-width: 80vw;
+            max-height: 40vh;
+            display: block;
+        }
+
+        .enter-button {
+            padding: 10px 30px;
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            opacity: 0;
+            animation: fadeIn 1.5s ease-in-out 0.7s forwards;
+        }
+
+        .enter-button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="logo-container">
+        <img src="202503312314_online-video-cutter.com-ezgif.com-video-to-gif-converter.gif" alt="gif">
+    </div>
+    
+    <button class="enter-button">ENTER</button>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const logo = document.querySelector('.logo-container');
+            const button = document.querySelector('.enter-button');
+            logo.style.opacity = 0;
+            button.style.opacity = 0;
+            setTimeout(() => {
+                logo.style.transition = "opacity 1.5s ease-in-out";
+                logo.style.opacity = 1;
+                
+                setTimeout(() => {
+                    button.style.transition = "opacity 1.5s ease-in-out, background-color 0.3s, transform 0.3s";
+                    button.style.opacity = 1;
+                }, 700);
+            }, 100);
+        });
+        
+        document.querySelector('.enter-button').addEventListener('click', function() {
+            window.location.href = "mainpage";
+        });
+    </script>
+</body>
+</html>
